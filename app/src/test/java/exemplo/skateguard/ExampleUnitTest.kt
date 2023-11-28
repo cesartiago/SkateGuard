@@ -1,4 +1,4 @@
-package example.skateguard
+package exemplo.skateguard
 
 import org.junit.Test
 
