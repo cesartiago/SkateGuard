@@ -16,7 +16,7 @@ Navegue ali na esquerda do programa, no diretório onde você clonou o repositó
 Isso é geralmente encontrado no nível do diretório do projeto.
 
 3- Configure as dependências:
-O Android Studio provavelmente baixará automaticamente as dependências do projeto assim que você abrir. **Se isso não acontecer, você pode clicar em "Sync Now" (Sincronizar agora) na barra superior** para forçar a sincronização.
+O Android Studio provavelmente baixará automaticamente as dependências do projeto assim que você abrir. **Se isso não acontecer, você pode clicar em "Sync Now" (Sincronizar agora) na barra superior** para forçar a sincronização (https://stackoverflow.com/questions/29565263/android-studio-how-to-run-gradle-sync-manually).
 
 4- Execute o aplicativo:
 Depois que as dependências estiverem configuradas, você deve ser capaz de executar o aplicativo. Clique no botão "Run" (Executar) na barra superior e escolha o dispositivo emulado ou conectado para executar o aplicativo.
