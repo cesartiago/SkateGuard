@@ -2,6 +2,7 @@ package exemplo.skateguard
 
 import android.content.Context
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
@@ -12,14 +13,22 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import java.util.UUID
 
 class MqttManager(context: Context) {
     private val brokerUrl = "ssl://7451da45137e473cb02be70947e7ec59.s2.eu.hivemq.cloud:8883"
-    private val clientId = "android"
+    private val clientId = "android_${UUID.randomUUID()}"
 
     // criação do cliente MQTT com persistência em memória
     private val mqttClient = MqttAndroidClient(context, brokerUrl, clientId, MemoryPersistence())
     private var TAG = "MQTT"
+
+    private var textView: TextView? = null
+
+    // Adicione um método para configurar o TextView
+    fun setTextView(textView: TextView) {
+        this.textView = textView
+    }
 
     init {
         // configura o cliente MQTT
@@ -32,6 +41,10 @@ class MqttManager(context: Context) {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 // callback chamado quando uma mensagem é recebida
                 Log.d(TAG, "Mensagem recebida: ${message.toString()} do tópico: $topic")
+
+                // Exibir a mensagem no TextView, substitua "seu_text_view_id" pelo ID real do seu TextView
+                textView?.text = "Mensagem recebida: ${message.toString()} do tópico: $topic"
+
             }
 
             override fun connectionLost(cause: Throwable?) {
@@ -46,7 +59,7 @@ class MqttManager(context: Context) {
     }
 
     // função para conectar ao broker MQTT
-    fun connect(context: Context) {
+    fun connect(context: MainActivity) {
         if (!mqttClient.isConnected) {
             val options = MqttConnectOptions()
             options.userName = "TrabalhoSD"
@@ -60,8 +73,8 @@ class MqttManager(context: Context) {
                         Log.d(TAG, "Conexão bem-sucedida")
 
                         // inscreve-se em um tópico e publica uma mensagem de teste
-                        subscribe("Conexão")
-                        publish("Conexão", "Conexão Estabelecida!")
+                        subscribe("/skateguard/falls")
+                        publish("/skateguard/falls", "Conexão Estabelecida!")
                     }
 
                     override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {

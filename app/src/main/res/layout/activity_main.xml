@@ -41,24 +41,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:textStyle="bold"
-        android:text="Inserir seus dados para fazer parte da comunidade:"
+        android:text="Venha fazer parte dessa comunidade:"
         android:textSize="18sp"
         android:layout_marginBottom="16dp"/>
-
-    <!-- Campo de nome -->
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nome" />
-
-    <!-- Campo de telefone -->
-    <EditText
-        android:id="@+id/phoneEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Telefone"/>
 
     <!-- Botão de entrada -->
     <Button

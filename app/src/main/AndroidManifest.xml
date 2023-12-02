@@ -2,12 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissões necessárias para o aplicativo -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Recurso (sensor acelerômetro) necessário -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -20,17 +25,28 @@
         android:theme="@style/Theme.SkateGuard"
         tools:targetApi="31">
 
-        <!-- Adicione a linha a seguir -->
+        <!-- Chave da API do Google Maps -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC3J6yApte6NEW7c3i1ATf4mBKHNxjNr9M" />
+
+        <!-- Serviço MQTT -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
+        <!-- Atividade principal (launcher) -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- Atividade secundária -->
+        <activity
+            android:name=".SecondActivity"
+            android:exported="true">
         </activity>
     </application>
 
