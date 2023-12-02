@@ -8,7 +8,7 @@ O SkateGuard é um projeto dedicado a aprimorar a segurança dos skatistas, espe
 
 - **Desenvolvimento em Kotlin:** A aplicação móvel é desenvolvida em Kotlin, proporcionando uma experiência moderna e eficiente para os skatistas.
 
-- **Monitoramento com CPU-Z:** Utiliza a API de CPU-Z para monitorar a atividade do dispositivo, identificando quedas com base na falta de movimento.
+- **Monitoramento da Aceleração com Biblioteca Nativa do Android:** Utiliza a biblioteca nativa do Android para obter aceleração e monitorar a atividade do dispositivo. A detecção de quedas é realizada através da integração direta com as funcionalidades do sistema operacional, proporcionando uma análise mais eficiente e precisa.
 
 - **Integração com Geolocalização:** Integra a API de geolocalização, como a Google Maps API, para obter coordenadas precisas do local da queda.
 
