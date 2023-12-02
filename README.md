@@ -4,7 +4,7 @@ O SkateGuard é um projeto dedicado a aprimorar a segurança dos skatistas, espe
 
 
 
-->## Como executar o programa: ##<-
+# Como executar o programa:
 
 1- Clone o repositório:
  "Clone a Repository" e inserir a URL do repositório Git.
@@ -12,7 +12,8 @@ O SkateGuard é um projeto dedicado a aprimorar a segurança dos skatistas, espe
 2- Abra o projeto no Android Studio:
 E no menu inicial, clique em abir um projeto existente: "Open an existing Android Studio project"
 Navegue ali na esquerda do programa, no diretório onde você clonou o repositório
--> e selecione o arquivo build.gradle dentro da pasta do projeto. Isso é geralmente encontrado no nível do diretório do projeto. <-
+**e selecione o arquivo build.gradle dentro da pasta do projeto**.
+Isso é geralmente encontrado no nível do diretório do projeto.
 
 3- Configure as dependências:
 O Android Studio provavelmente baixará automaticamente as dependências do projeto assim que você abrir. Se isso não acontecer, você pode clicar em "Sync Now" (Sincronizar agora) na barra superior para forçar a sincronização.
