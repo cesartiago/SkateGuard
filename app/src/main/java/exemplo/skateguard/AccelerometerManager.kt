@@ -10,55 +10,45 @@ import android.util.Log
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-// definição da classe AccelerometerManager, que implementa SensorEventListener
 class AccelerometerManager(
-    context: Context, // Contexto é necessário para acessar serviços do sistema, como o SensorManager
-    private val currentSpeed: Double = 0.0, // velocidade atual do skate em metros por segundo (m/s)
+    context: Context,
     private val fallDetectionListener: FallDetectionListener,
     private val mqttManager: MqttManager
 ) : SensorEventListener {
 
-    // interface para o callback de detecção de queda
     interface FallDetectionListener {
         fun onFallDetected()
     }
 
-    // gerenciador do sensor e instância do acelerômetro
     private val sensorManager: SensorManager =
         context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val accelerometer: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    private val accelerometer: Sensor? =
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-    // variáveis para rastrear a última aceleração e tempo
+    private var fallDetected: Boolean = false
     private var lastAcceleration: Double = 0.0
     private var lastTime: Long = System.currentTimeMillis()
-
-    // usar um Handler para implementar o temporizador
     private val handler = Handler()
 
-    // inicialização da classe, verifica se o acelerômetro está disponível
     init {
         if (accelerometer == null) {
             throw UnsupportedOperationException("Acelerômetro não está disponível no dispositivo.")
         }
     }
 
-    // método para iniciar a escuta do acelerômetro
     fun startListening() {
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    // método para parar a escuta do acelerômetro
     fun stopListening() {
         Log.d("AccelerometerManager", "Parando a escuta do acelerômetro")
         sensorManager.unregisterListener(this)
     }
 
-    // método chamado quando a precisão do sensor muda (não utilizado neste exemplo)
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // Não estamos preocupados com mudanças na precisão do sensor neste exemplo
     }
 
-    // método chamado quando os valores do sensor mudam
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor == accelerometer) {
             val currentTime = System.currentTimeMillis()
@@ -88,10 +78,8 @@ class AccelerometerManager(
         //e coisas do tipo.
         // deltaVelocity < -4.0 && acceleration > 10.0
         if (acceleration > 10.0) {
-            // a velocidade diminuiu bruscamente e a aceleração é alta, indicando uma possível queda
-
-            // adicionar um atraso de 10 segundos para confirmar a queda
-            handler.postDelayed({
+            // Verificar se a queda já foi detectada
+            if (!fallDetected) {
                 // Chamar o callback de detecção de queda
                 fallDetectionListener.onFallDetected()
 
@@ -101,26 +89,34 @@ class AccelerometerManager(
                 // Adicionar a lógica para publicar a mensagem MQTT aqui
                 publishFallMessage()
 
-                Log.d("FallDetection", "Queda detectada!")
+                // Defina o sinalizador de queda como verdadeiro
+                fallDetected = true
 
-            }, 10000) // 10000 milissegundos = 10 segundos
+                // Parar a escuta do acelerômetro após a detecção da queda
+                stopListening()
+            }
         }
     }
 
-    // Método para publicar a mensagem MQTT de queda
     private fun publishFallMessage() {
-        // Substitua "seu_topico" pelo tópico MQTT desejado
-        val topic = "/skateguard/falls"
-        val message = "Queda detectada!"
+        // Verificar se a mensagem já foi publicada
+        if (!fallDetected) {
+            // Substitua "seu_topico" pelo tópico MQTT desejado
+            val topic = "/skateguard/falls"
+            val message = "Queda detectada! Nome: ${AppGlobals.userName}"
 
-        // Verificar se o cliente MQTT está conectado antes de tentar publicar
-        if (mqttManager.isConnected()) {
-            // Publicar a mensagem MQTT
-            mqttManager.publish(topic, message)
+            // Verificar se o cliente MQTT está conectado antes de tentar publicar
+            if (mqttManager.isConnected()) {
+                // Publicar a mensagem MQTT
+                mqttManager.publish(topic, message)
 
-            Log.d("MQTT", "Mensagem publicada com sucesso no tópico $topic")
-        } else {
-            Log.e("MQTT", "Erro: Cliente MQTT não está conectado. A mensagem não foi publicada.")
+                Log.d("MQTT", "Mensagem publicada com sucesso no tópico $topic")
+            } else {
+                Log.e("MQTT", "Erro: Cliente MQTT não está conectado. A mensagem não foi publicada.")
+            }
+
+            // Ajustar fallDetected aqui para garantir que a lógica de detecção de queda só seja acionada uma vez
+            fallDetected = true
         }
     }
 }

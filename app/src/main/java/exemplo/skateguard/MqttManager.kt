@@ -16,7 +16,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import java.util.UUID
 
 class MqttManager(context: Context) {
-    private val brokerUrl = "ssl://7451da45137e473cb02be70947e7ec59.s2.eu.hivemq.cloud:8883"
+    private val brokerUrl = "ssl://d678ef814f2c467f8eee70577fdb8732.s2.eu.hivemq.cloud:8883"
     private val clientId = "android_${UUID.randomUUID()}"
 
     // criação do cliente MQTT com persistência em memória
@@ -74,7 +74,7 @@ class MqttManager(context: Context) {
 
                         // inscreve-se em um tópico e publica uma mensagem de teste
                         subscribe("/skateguard/falls")
-                        publish("/skateguard/falls", "Conexão Estabelecida!")
+                        publish("/skateguard/falls", "Conexão Estabelecida! por ${AppGlobals.userName}")
                     }
 
                     override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {

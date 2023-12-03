@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.EditText
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +21,13 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.enterButton)
     }
 
+    val usernameEditText: EditText by lazy {
+        findViewById(R.id.usernameEditText)
+    }
+
+    // inicialização do AccelerometerManager usando lazy initialization
+    private lateinit var accelerometerManager: AccelerometerManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         // configura o listener de clique para o botão
         enterButton.setOnClickListener {
             try {
+                Log.d("MyApp", "Tentando conectar ao broker MQTT.")
                 // verifica se o cliente MQTT já está conectado
                 if (!mqttManager.isConnected()) {
                     // conectar ao broker MQTT usando o MqttManager
@@ -50,6 +59,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, SecondActivity::class.java)
 
                 startActivity(intent)
+
+                val username = usernameEditText.text.toString()
+                // Com o nome inserido pelo usuário definir o nome de AppGlobals.userName
+                AppGlobals.userName = username
 
             } catch (e: Exception) {
                 // em caso de erro, imprime o stack trace no log

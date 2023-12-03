@@ -26,13 +26,23 @@ class SecondActivity : AppCompatActivity() {
         // Inicialize o botão
         startButton = findViewById(R.id.startButton)
 
-        mqttManager = AppGlobals.mqttManager!!
+        fun initAccelerometerManager() {
+            accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
+                override fun onFallDetected() {
+                    Log.d("FallDetection", "Queda detectada!")
+                    runOnUiThread {
+                        // Atualiza o texto do botão para "Parar" quando uma queda é detectada
+                        // Se o sensor já estiver iniciado, pare a escuta
+                        accelerometerManager.stopListening()
+                        isSensorStarted = false
+                        startButton.text = "Iniciar"
+                    }
+                }
+            }, mqttManager!!)
+        }
 
-        accelerometerManager = AccelerometerManager(this, 0.0, object : AccelerometerManager.FallDetectionListener {
-            override fun onFallDetected() {
-                Log.d("FallDetection", "Queda detectada!")
-            }
-        }, mqttManager!!)
+        // Inicialize o AccelerometerManager
+        initAccelerometerManager()
 
         // Adicione um OnClickListener ao botão
         startButton.setOnClickListener {
@@ -42,12 +52,33 @@ class SecondActivity : AppCompatActivity() {
                 isSensorStarted = false
                 startButton.text = "Iniciar"
             } else {
+                // Reinicialize o AccelerometerManager
+                initAccelerometerManager()
+
+                // Configurar o nome (substitua "SeuNomeAqui" pelo nome real)
+                //accelerometerManager.setUserName("SeuNomeAqui")
+
                 // Se o sensor não estiver iniciado, inicie a escuta
                 accelerometerManager.startListening()
                 isSensorStarted = true
                 startButton.text = "Parar"
             }
         }
+
+        // Inicialize o AccelerometerManager com a detecção de queda
+        accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
+            override fun onFallDetected() {
+                Log.d("FallDetection", "Queda detectada!")
+                runOnUiThread {
+                    // Atualiza o texto do botão para "Parar" quando uma queda é detectada
+                    // Se o sensor já estiver iniciado, pare a escuta
+                    accelerometerManager.stopListening()
+                    isSensorStarted = false
+                    startButton.text = "Iniciar"
+                }
+            }
+        }, mqttManager!!)
+
     }
 
     override fun onResume() {
