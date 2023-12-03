@@ -45,6 +45,15 @@
         android:textSize="18sp"
         android:layout_marginBottom="16dp"/>
 
+    <!-- Campo de entrada de texto para o nome do usuário -->
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Digite seu nome"
+        android:inputType="text"
+        android:layout_marginTop="16dp" />
+
     <!-- Botão de entrada -->
     <Button
         android:id="@+id/enterButton"
