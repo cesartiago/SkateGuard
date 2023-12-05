@@ -1,94 +1,82 @@
 package exemplo.skateguard
 
-import android.Manifest
-import android.content.Context
+import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Location
-import android.os.Looper
-import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.location.LocationResult
 import android.location.LocationManager
 import android.provider.Settings
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationServices
 
-class LocationManager(private val context: Context) {
+class LocationManager(private val context: Context, private val locationCallback: SecondActivity) {
 
     private val fusedLocationClient: FusedLocationProviderClient =
-        com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(context)
+        LocationServices.getFusedLocationProviderClient(context)
 
-    private val locationPermissionRequest =
-        (context as AppCompatActivity).registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-            ) {
-                startLocationUpdates()
-            } else {
-                openLocationSettings()
-            }
-        }
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
-    init {
-        checkLocationPermission()
+    interface LocationCallback {
+        fun onLocationPermissionGranted()
+        // Adicione outros métodos de callback conforme necessário
     }
 
-    private fun checkLocationPermission() {
-        if (checkSelfPermission(
+    fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
                 context,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            locationPermissionRequest.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
+            // Se a permissão de localização não foi concedida, solicitar permissão
+            Log.d("LocationManager", "Requesting location permission")
+            ActivityCompat.requestPermissions(
+                context as AppCompatActivity,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
             )
         } else {
-            if (isLocationEnabled()) {
-                startLocationUpdates()
-            } else {
-                openLocationSettings()
-            }
+            // Se a permissão já foi concedida, verificar se o serviço de localização está ativado
+            checkLocationSettings()
         }
     }
 
-    private fun isLocationEnabled(): Boolean {
+    private fun checkLocationSettings() {
+        // Verificar se o serviço de localização está ativado
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-    }
-
-    private fun openLocationSettings() {
-        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        context.startActivity(intent)
-    }
-
-    fun startLocationUpdates() {
-        // Configuração do pedido de localização
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 10000 // 10 segundos
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // O serviço de localização está desativado, exibir diálogo para ativar
+            showEnableLocationDialog()
+        } else {
+            // O serviço de localização está ativado, chamar o callback
+            Log.d("LocationManager", "Location permission already granted")
+            locationCallback.onLocationPermissionGranted()
         }
+    }
 
-        // Callback para receber as atualizações de localização
-        val locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                val lastLocation: Location? = locationResult.lastLocation
-                // Faça algo com a localização, se necessário
+    private fun showEnableLocationDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Ativar Localização")
+            .setMessage("A localização está desativada. Por favor, ative-a nas configurações.")
+            .setPositiveButton("Configurações") { _, _ ->
+                // Abrir configurações de localização
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                context.startActivity(intent)
             }
-        }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                // Cancelar a solicitação ou fornecer feedback ao usuário
+                dialog.dismiss()
+            }
+            .show()
+    }
 
-        // Inicia a obtenção da localização
+
+    fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -106,10 +94,22 @@ class LocationManager(private val context: Context) {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                Log.d("Entrou", "Entrou")
+                // Aqui você pode usar a localização obtida (pode ser nula)
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    // Faça algo com a latitude e longitude
+                    Log.d("LocationManager", "Latitude: $latitude, Longitude: $longitude")
+                }else{
+                    Log.e("LocationManager", "Localização não disponível")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Lidar com falhas ao obter a localização
+            }
     }
 }
+

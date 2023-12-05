@@ -1,17 +1,23 @@
 package exemplo.skateguard
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.MapView
 import android.widget.Button
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import exemplo.skateguard.AppGlobals.mqttManager
 
+class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback {
 
-class SecondActivity : AppCompatActivity() {
-
+    private lateinit var locationManager: LocationManager
     private lateinit var mapView: MapView
     private lateinit var startButton: Button
+    private lateinit var messageTextView: TextView
+    private lateinit var locationTextView: TextView
+
     private lateinit var accelerometerManager: AccelerometerManager
     private var isSensorStarted = false
 
@@ -19,12 +25,23 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
 
+        // Inicializar a classe LocationManager
+        locationManager = LocationManager(this, this)
+
+        // Solicitar permissão de localização
+        locationManager.requestLocationPermission()
+
         // Inicialize o MapView
         mapView = findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
 
         // Inicialize o botão
         startButton = findViewById(R.id.startButton)
+
+        // Inicialize as referências aos elementos de texto
+        messageTextView = findViewById(R.id.messageTextView)
+        locationTextView = findViewById(R.id.locationTextView)
+
 
         fun initAccelerometerManager() {
             accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
@@ -38,7 +55,8 @@ class SecondActivity : AppCompatActivity() {
                         startButton.text = "Iniciar"
                     }
                 }
-            }, mqttManager!!)
+            }, locationManager,
+                mqttManager!!)
         }
 
         // Inicialize o AccelerometerManager
@@ -68,7 +86,7 @@ class SecondActivity : AppCompatActivity() {
         // Inicialize o AccelerometerManager com a detecção de queda
         accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
             override fun onFallDetected() {
-                Log.d("FallDetection", "Queda detectada!")
+                Log.d("LocationOn", "Queda detectada!")
                 runOnUiThread {
                     // Atualiza o texto do botão para "Parar" quando uma queda é detectada
                     // Se o sensor já estiver iniciado, pare a escuta
@@ -77,7 +95,8 @@ class SecondActivity : AppCompatActivity() {
                     startButton.text = "Iniciar"
                 }
             }
-        }, mqttManager!!)
+        }, locationManager,
+            mqttManager!!)
 
     }
 
@@ -104,6 +123,23 @@ class SecondActivity : AppCompatActivity() {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    override fun onLocationPermissionGranted() {
+        Log.d("SecondActivity", "Location permission granted in SecondActivity")
+
+        // Verificar se a permissão de localização está concedida
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permissão concedida, obter a última localização
+            locationManager.getLastLocation()
+        } else {
+            // Permissão não concedida, solicitar permissão (isso deveria ser tratado anteriormente)
+            Log.e("SecondActivity", "Location permission not granted.")
+        }
     }
 }
 
