@@ -13,6 +13,7 @@ import kotlin.math.sqrt
 class AccelerometerManager(
     context: Context,
     private val fallDetectionListener: FallDetectionListener,
+    private val locationManager: LocationManager,
     private val mqttManager: MqttManager
 ) : SensorEventListener {
 
@@ -86,6 +87,9 @@ class AccelerometerManager(
                 // Adicionar a mensagem de log dentro do AccelerometerManager
                 Log.d("FallDetection", "Queda detectada!")
 
+                // Chamar o método getLastLocation da classe LocationManager
+                locationManager.getLastLocation()
+
                 // Adicionar a lógica para publicar a mensagem MQTT aqui
                 publishFallMessage()
 
@@ -94,6 +98,7 @@ class AccelerometerManager(
 
                 // Parar a escuta do acelerômetro após a detecção da queda
                 stopListening()
+
             }
         }
     }
