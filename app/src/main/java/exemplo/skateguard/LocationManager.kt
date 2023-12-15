@@ -99,10 +99,12 @@ class LocationManager(private val context: Context, private val locationCallback
                 Log.d("Entrou", "Entrou")
                 // Aqui você pode usar a localização obtida (pode ser nula)
                 if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
+                    AppGlobals.latitude = location.latitude
+                    AppGlobals.longitude = location.longitude
                     // Faça algo com a latitude e longitude
-                    Log.d("LocationManager", "Latitude: $latitude, Longitude: $longitude")
+                    Log.d("LocationManager", "Latitude: $AppGlobals.latitude, Longitude: $AppGlobals.longitude")
+
+
                 }else{
                     Log.e("LocationManager", "Localização não disponível")
                 }

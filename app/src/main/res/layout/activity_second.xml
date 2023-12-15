@@ -28,7 +28,8 @@
         android:layout_height="300dp"
         android:layout_below="@id/headerTextView"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:apiKey="AIzaSyDX_ndH9EqX2yj1tw3N9VYlws06LQkiCYo" />
 
     <!-- Botão de Iniciar -->
     <Button
