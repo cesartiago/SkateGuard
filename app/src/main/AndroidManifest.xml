@@ -28,7 +28,7 @@
         <!-- Chave da API do Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC3J6yApte6NEW7c3i1ATf4mBKHNxjNr9M" />
+            android:value="AIzaSyDX_ndH9EqX2yj1tw3N9VYlws06LQkiCYo" />
 
         <!-- Serviço MQTT -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />

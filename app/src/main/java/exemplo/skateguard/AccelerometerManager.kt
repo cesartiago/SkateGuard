@@ -13,11 +13,12 @@ import kotlin.math.sqrt
 class AccelerometerManager(
     context: Context,
     private val fallDetectionListener: FallDetectionListener,
+    private val locationManager: LocationManager,
     private val mqttManager: MqttManager
 ) : SensorEventListener {
 
     interface FallDetectionListener {
-        fun onFallDetected()
+        fun onFallDetected(latitude: Double, longitude: Double)
     }
 
     private val sensorManager: SensorManager =
@@ -68,12 +69,12 @@ class AccelerometerManager(
             Log.d("AccelerometerManager", "Aceleração X: ${event.values[0]}, Y: ${event.values[1]}, Z: ${event.values[2]}")
 
             // chamada ao método de detecção de queda
-            detectFall(deltaVelocity, acceleration)
+            detectFall(deltaVelocity, acceleration, AppGlobals.latitude, AppGlobals.longitude)
         }
     }
 
     // método privado para a lógica de detecção de queda
-    private fun detectFall(deltaVelocity: Double, acceleration: Double) {
+    private fun detectFall(deltaVelocity: Double, acceleration: Double, latitude: Double, longitude: Double) {
         // implementar a lógica de detecção de queda, ainda não tá pronto, precisa de ajuste sobre a aceleração, a parada do nada
         //e coisas do tipo.
         // deltaVelocity < -4.0 && acceleration > 10.0
@@ -81,10 +82,14 @@ class AccelerometerManager(
             // Verificar se a queda já foi detectada
             if (!fallDetected) {
                 // Chamar o callback de detecção de queda
-                fallDetectionListener.onFallDetected()
+                fallDetectionListener.onFallDetected(latitude, longitude)
 
                 // Adicionar a mensagem de log dentro do AccelerometerManager
                 Log.d("FallDetection", "Queda detectada!")
+
+                // Chamar o método getLastLocation da classe LocationManager
+                locationManager.getLastLocation()
+                //SecondActivity.updateMapLocation()
 
                 // Adicionar a lógica para publicar a mensagem MQTT aqui
                 publishFallMessage()
@@ -94,6 +99,7 @@ class AccelerometerManager(
 
                 // Parar a escuta do acelerômetro após a detecção da queda
                 stopListening()
+
             }
         }
     }
@@ -103,7 +109,7 @@ class AccelerometerManager(
         if (!fallDetected) {
             // Substitua "seu_topico" pelo tópico MQTT desejado
             val topic = "/skateguard/falls"
-            val message = "Queda detectada! Nome: ${AppGlobals.userName}"
+            val message = "Queda detectada! Nome: ${AppGlobals.userName} Latitude: ${AppGlobals.latitude} Longitude: ${AppGlobals.latitude} "
 
             // Verificar se o cliente MQTT está conectado antes de tentar publicar
             if (mqttManager.isConnected()) {

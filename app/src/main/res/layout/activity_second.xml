@@ -28,7 +28,8 @@
         android:layout_height="300dp"
         android:layout_below="@id/headerTextView"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:apiKey="AIzaSyDX_ndH9EqX2yj1tw3N9VYlws06LQkiCYo" />
 
     <!-- Botão de Iniciar -->
     <Button
@@ -44,18 +45,18 @@
 
     <!-- Informações do usuário -->
     <TextView
-        android:id="@+id/nameTextView"
+        android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/startButton"
         android:layout_marginTop="16dp"
-        android:text="Nome: John Doe"/>
+        android:text="Mensagem:"/>
 
     <TextView
         android:id="@+id/locationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nameTextView"
+        android:layout_below="@id/messageTextView"
         android:layout_marginTop="10dp"
         android:text="Localização: Latitude, Longitude" />
 
