@@ -99,8 +99,8 @@ class LocationManager(private val context: Context, private val locationCallback
                 Log.d("Entrou", "Entrou")
                 // Aqui você pode usar a localização obtida (pode ser nula)
                 if (location != null) {
-                    AppGlobals.latitude = location.latitude
-                    AppGlobals.longitude = location.longitude
+                    AppGlobals.minha_latitude = location.latitude
+                    AppGlobals.minha_longitude = location.longitude
                     // Faça algo com a latitude e longitude
                     Log.d("LocationManager", "Latitude: $AppGlobals.latitude, Longitude: $AppGlobals.longitude")
 

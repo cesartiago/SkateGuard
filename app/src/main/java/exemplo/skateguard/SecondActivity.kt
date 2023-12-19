@@ -79,6 +79,8 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
                         startButton.text = "Iniciar"
 
                     }
+
+                //Na minha queda:
                 updateMapLocation(latitude, longitude)
                 }
             }, locationManager,
@@ -133,8 +135,10 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
 
             // Verificar se há uma última localização conhecida
             lastKnownLocation?.let {
+
+
                 // Se houver, chame updateMapLocation
-                updateMapLocation(it.latitude, it.longitude)
+                // FOI O ÚLTIMO A SAIR: updateMapLocation(it.latitude, it.longitude)
                 // Limpe a última localização conhecida após usá-la
                 lastKnownLocation = null
             }
