@@ -25,6 +25,8 @@ class MqttManager(context: Context) {
 
     private var textView: TextView? = null
 
+
+
     // Adicione um método para configurar o TextView
     fun setTextView(textView: TextView) {
         this.textView = textView
@@ -44,6 +46,7 @@ class MqttManager(context: Context) {
 
                 // Exibir a mensagem no TextView, substitua "seu_text_view_id" pelo ID real do seu TextView
                 textView?.text = "Mensagem recebida: ${message.toString()} do tópico: $topic"
+
 
             }
 

@@ -66,6 +66,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
 
         fun initAccelerometerManager() {
             accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
+                // Este método é chamado quando uma queda é detectada pelo AccelerometerManager
                 override fun onFallDetected(latitude: Double, longitude: Double) {
                     Log.d("FallDetection", "Queda detectada!")
                     runOnUiThread {
@@ -74,9 +75,10 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
                         accelerometerManager.stopListening()
                         isSensorStarted = false
                         startButton.text = "Iniciar"
+                        updateMapLocation(latitude, longitude)
                     }
 
-                updateMapLocation(latitude, longitude)
+                //updateMapLocation(latitude, longitude)
                 }
             }, locationManager,
                 mqttManager!!)
@@ -106,23 +108,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
             }
         }
 
-        // Inicialize o AccelerometerManager com a detecção de queda
-        accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
-            // Este método é chamado quando uma queda é detectada pelo AccelerometerManager
-            override fun onFallDetected(latitude: Double, longitude: Double) {
-                Log.d("FallDetection", "Queda detectada!")
-                runOnUiThread {
-                    // Atualiza o texto do botão para "Parar" quando uma queda é detectada
-                    // Se o sensor já estiver iniciado, pare a escuta
-                    accelerometerManager.stopListening()
-                    isSensorStarted = false
-                    startButton.text = "Iniciar"
 
-                    // Adicione a chamada do método updateMapLocation dentro do runOnUiThread
-                    updateMapLocation(latitude, longitude)
-                }
-            }
-        }, locationManager, mqttManager!!)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -248,7 +234,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
             startButton.text = "Iniciar"
 
             // Adicione a chamada do método updateMapLocation dentro do runOnUiThread
-            updateMapLocation(latitude, longitude)
+            //updateMapLocation(latitude, longitude)
         }
     }
 
