@@ -69,9 +69,6 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
                 // Este método é chamado quando uma queda é detectada pelo AccelerometerManager
 
 
-                var novaLatitude: Double = 0.0
-                var novaLongitude: Double = 0.0
-
                 override fun onFallDetected(latitude: Double, longitude: Double) {
                     Log.d("FallDetection", "Queda detectada!")
                     runOnUiThread {
@@ -81,37 +78,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
                         isSensorStarted = false
                         startButton.text = "Iniciar"
 
-
-
-                        // Analise a mensagem recebida para extrair latitude e longitude
-                        val message = "Queda detectada! Nome: aaaa Latitude: -22.6034184 Longitude: -22.6034184"
-
-                        // Encontrar o valor após "Latitude: " e "Longitude: "
-                        val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
-                        val longitudePattern = Regex("Longitude: ([-+]?\\d+\\.?\\d*)")
-
-                        val latitudeMatch = latitudePattern.find(message)
-                        val longitudeMatch = longitudePattern.find(message)
-
-                        val newLatitude = latitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
-                        val newLongitude = longitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
-
-                        novaLatitude = newLatitude ?: 0.0
-                        novaLongitude = newLongitude ?: 0.0
-
-
-                        if (newLatitude != null && newLongitude != null) {
-                            Log.d("FallDetection", "Novos valores - Latitude: $newLatitude, Longitude: $newLongitude")
-                        } else {
-                            Log.e("FallDetection", "Valores de Latitude ou Longitude não encontrados ou não são válidos")
-                        }
                     }
-
-                // Chamar a função updateMapLocation com os valores seguros
-                updateMapLocation(novaLatitude, novaLongitude)
-                Log.d("updateMapLocation", "Valores finais - novaLatitude: $novaLatitude, novaLongitude: $novaLongitude")
-
-
                 updateMapLocation(latitude, longitude)
                 }
             }, locationManager,

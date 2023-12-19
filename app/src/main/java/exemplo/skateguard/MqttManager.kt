@@ -48,6 +48,8 @@ class MqttManager(context: Context) {
                 textView?.text = "Mensagem recebida: ${message.toString()} do tópico: $topic"
 
 
+
+
             }
 
             override fun connectionLost(cause: Throwable?) {
