@@ -27,8 +27,6 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
     private lateinit var locationManager: LocationManager
     private lateinit var mapView: MapView
     private lateinit var startButton: Button
-    private lateinit var messageTextView: TextView
-    private lateinit var locationTextView: TextView
 
     private lateinit var googleMap: GoogleMap
     private var mapViewInitialized = false
