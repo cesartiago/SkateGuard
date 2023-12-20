@@ -109,7 +109,7 @@ class AccelerometerManager(
         if (!fallDetected) {
             // Substitua "seu_topico" pelo tópico MQTT desejado
             val topic = "/skateguard/falls"
-            val message = "Queda detectada! Nome: ${AppGlobals.userName} Latitude: ${AppGlobals.minha_latitude} Longitude: ${AppGlobals.minha_latitude} "
+            val message = "Queda detectada! Nome: ${AppGlobals.userName} Latitude: ${AppGlobals.minha_latitude} Longitude: ${AppGlobals.minha_longitude} "
 
             // Verificar se o cliente MQTT está conectado antes de tentar publicar
             if (mqttManager.isConnected()) {

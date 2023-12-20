@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.MapView
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import exemplo.skateguard.AppGlobals.mqttManager
@@ -255,20 +256,25 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
     fun processMqttMessage(mensagemRecebida: String) {
         Log.d(TAG, "Chegou no secundy: $mensagemRecebida")
 
-        // Inicialize o elemento de texto clicável (TextView)
-        val clickableText = findViewById<TextView>(R.id.clickableText)
-        clickableText.text = "${clickableText.text}\n\n$mensagemRecebida"
+        val newClickableText = TextView(this)
+
+        newClickableText.text = mensagemRecebida
+
+        // Adicione o novo TextView ao layout
+        val layout = findViewById<LinearLayout>(R.id.linear_layout_container)
+        layout.addView(newClickableText)
+
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             // Limpe o texto após 20 segundos
-            clickableText.text = ""
+            layout.removeView(newClickableText)
         }, 20000)
 
         // Adicione um OnClickListener ao texto clicável - ITALIA
-        clickableText.setOnClickListener {
+        newClickableText.setOnClickListener {
             // Analise a mensagem recebida para extrair latitude e longitude
-            val message = clickableText.text.toString()
+            val message =  newClickableText.text.toString()
 
             // Encontrar o valor após "Latitude: " e "Longitude: "
             val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
