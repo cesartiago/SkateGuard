@@ -47,9 +47,6 @@ class MqttManager(context: Context) {
                 // Exibir a mensagem no TextView, substitua "seu_text_view_id" pelo ID real do seu TextView
                 textView?.text = "Mensagem recebida: ${message.toString()} do tópico: $topic"
 
-                AppGlobals.recebida_latitude= 47.996
-                AppGlobals.recebida_longitude=  48.60
-                AppGlobals.mensagensRecebidas=  1
 
 
 

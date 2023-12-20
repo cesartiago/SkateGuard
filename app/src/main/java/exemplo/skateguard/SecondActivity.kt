@@ -16,10 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-
-
-
-
+import kotlin.random.Random
 
 
 class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, OnMapReadyCallback, AccelerometerManager.FallDetectionListener {
@@ -63,6 +60,32 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
         messageTextView = findViewById(R.id.messageTextView)
         locationTextView = findViewById(R.id.locationTextView)
 
+        // Inicialize o elemento de texto clicável (TextView)
+        val clickableText = findViewById<TextView>(R.id.clickableText)
+
+        // Adicione um OnClickListener ao texto clicável
+        clickableText.setOnClickListener {
+            // Atualize as variáveis minha_latitude e minha_longitude
+            AppGlobals.minha_latitude = 43.49121415928346
+            AppGlobals.minha_longitude = 11.64144410444921
+
+            // Chame a função updateMapLocation com as variáveis atualizadas
+            updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
+        }
+
+        // Inicialize o elemento de texto clicável 2 (TextView)
+        val clickableText2 = findViewById<TextView>(R.id.clickableText2)
+
+        // Adicione um OnClickListener ao texto clicável
+        clickableText2.setOnClickListener {
+            // Atualize as variáveis minha_latitude e minha_longitude
+            AppGlobals.minha_latitude = 46.912112216597877
+            AppGlobals.minha_longitude = 3.6053229560989597
+
+            // Chame a função updateMapLocation com as variáveis atualizadas
+            updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
+        }
+
 
         fun initAccelerometerManager() {
             accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
@@ -81,7 +104,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
                     }
 
                 //Na minha queda:
-                updateMapLocation(latitude, longitude)
+                updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
                 }
             }, locationManager,
                 mqttManager!!)

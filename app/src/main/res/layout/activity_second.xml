@@ -60,7 +60,30 @@
         android:layout_marginTop="10dp"
         android:text="Localização: Latitude, Longitude" />
 
-    <!-- Adicione outros elementos conforme necessário -->
+    <!-- Texto 1 -->
+    <TextView
+        android:id="@+id/clickableText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/messageTextView"
+        android:layout_marginTop="45dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Clique aqui para atualizar a localização"
+        android:textColor="?attr/colorAccent" />
+
+    <!-- Texto 2 -->
+    <TextView
+        android:id="@+id/clickableText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/messageTextView"
+        android:layout_marginTop="82dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Clique aqui para atualizar a localização para 2"
+        android:textColor="?attr/colorAccent" />
+
 
 </RelativeLayout>
 
