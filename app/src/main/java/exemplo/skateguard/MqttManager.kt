@@ -1,9 +1,13 @@
 package exemplo.skateguard
 
+import android.app.Activity
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import exemplo.skateguard.SecondActivity
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -16,7 +20,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import java.util.UUID
 
 class MqttManager(context: Context) {
-    private val brokerUrl = "ssl://d678ef814f2c467f8eee70577fdb8732.s2.eu.hivemq.cloud:8883"
+    private val brokerUrl = "ssl://7451da45137e473cb02be70947e7ec59.s2.eu.hivemq.cloud:8883"
     private val clientId = "android_${UUID.randomUUID()}"
 
     // criação do cliente MQTT com persistência em memória
@@ -25,12 +29,11 @@ class MqttManager(context: Context) {
 
     private var textView: TextView? = null
 
-
-
     // Adicione um método para configurar o TextView
     fun setTextView(textView: TextView) {
         this.textView = textView
     }
+
 
     init {
         // configura o cliente MQTT
@@ -41,16 +44,14 @@ class MqttManager(context: Context) {
     private fun configureMqttClient() {
         mqttClient.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                // callback chamado quando uma mensagem é recebida
-                Log.d(TAG, "Mensagem recebida: ${message.toString()} do tópico: $topic")
+                    message?.let {
+                        val mensagemRecebida = it.toString()
 
-                // Exibir a mensagem no TextView, substitua "seu_text_view_id" pelo ID real do seu TextView
-                textView?.text = "Mensagem recebida: ${message.toString()} do tópico: $topic"
+                        Log.d(TAG, "no mqtt: ${mensagemRecebida}")
 
-
-
-
-
+                        val secondActivity = SecondActivity.instance
+                        secondActivity?.processMqttMessage(mensagemRecebida)
+                    }
 
             }
 
