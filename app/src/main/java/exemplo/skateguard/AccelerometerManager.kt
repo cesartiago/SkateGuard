@@ -78,7 +78,7 @@ class AccelerometerManager(
         // implementar a lógica de detecção de queda, ainda não tá pronto, precisa de ajuste sobre a aceleração, a parada do nada
         //e coisas do tipo.
         // deltaVelocity < -4.0 && acceleration > 10.0
-        if (acceleration > 10.0) {
+        if (acceleration > 20.0) {
             // Verificar se a queda já foi detectada
             if (!fallDetected) {
                 // Chamar o callback de detecção de queda
