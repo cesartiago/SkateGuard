@@ -19,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import kotlin.random.Random
 
 
 class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, OnMapReadyCallback, AccelerometerManager.FallDetectionListener {
