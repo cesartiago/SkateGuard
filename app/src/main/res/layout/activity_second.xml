@@ -69,7 +69,7 @@
         android:layout_marginTop="45dp"
         android:clickable="true"
         android:focusable="true"
-        android:text="Clique aqui para atualizar a localização"
+        android:text="Clique aqui para atualizar a localização - Itália"
         android:textColor="?attr/colorAccent" />
 
     <!-- Texto 2 -->
@@ -81,7 +81,7 @@
         android:layout_marginTop="82dp"
         android:clickable="true"
         android:focusable="true"
-        android:text="Clique aqui para atualizar a localização para 2"
+        android:text="Clique aqui para atualizar a localização para 2 - França"
         android:textColor="?attr/colorAccent" />
 
 

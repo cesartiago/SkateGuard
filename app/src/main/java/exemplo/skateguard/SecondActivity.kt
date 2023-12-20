@@ -63,18 +63,39 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
         // Inicialize o elemento de texto clicável (TextView)
         val clickableText = findViewById<TextView>(R.id.clickableText)
 
-        // Adicione um OnClickListener ao texto clicável
+        // Adicione um OnClickListener ao texto clicável - ITALIA
         clickableText.setOnClickListener {
-            // Atualize as variáveis minha_latitude e minha_longitude
-            AppGlobals.minha_latitude = 43.49121415928346
-            AppGlobals.minha_longitude = 11.64144410444921
+            // Analise a mensagem recebida para extrair latitude e longitude
+            val message = "Queda detectada! Nome: aaaa Latitude: 43.49121415928346 Longitude: 11.64144410444921"
 
-            // Chame a função updateMapLocation com as variáveis atualizadas
+            // Encontrar o valor após "Latitude: " e "Longitude: "
+            val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
+            val longitudePattern = Regex("Longitude: ([-+]?\\d+\\.?\\d*)")
+
+            val latitudeMatch = latitudePattern.find(message)
+            val longitudeMatch = longitudePattern.find(message)
+
+            val novaLatitude = latitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
+            val novaLongitude = longitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
+
+            AppGlobals.minha_latitude = novaLatitude ?: 0.0
+            AppGlobals.minha_longitude = novaLongitude ?: 0.0
+
+            if (novaLatitude != null && novaLongitude != null) {
+                Log.d("FallDetection", "Novos valores - Latitude: $novaLatitude, Longitude: $novaLongitude")
+                Log.d("updateMapLocation", "Valores finais - minha_latitude: ${AppGlobals.minha_latitude}, minha_longitude: ${AppGlobals.minha_longitude}")
+            } else {
+                Log.e("FallDetection", "Valores de Latitude ou Longitude não encontrados ou não são válidos")
+            }
+
+            // Chame a função updateMapLocation com os valores seguros
             updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
+
         }
 
-        // Inicialize o elemento de texto clicável 2 (TextView)
+        // Inicialize o elemento de texto clicável 2 (TextView) - sem tratamento
         val clickableText2 = findViewById<TextView>(R.id.clickableText2)
+        //FRANÇA: AppGlobals.minha_latitude = 46.912112216597877 AppGlobals.minha_longitude = 3.6053229560989597
 
         // Adicione um OnClickListener ao texto clicável
         clickableText2.setOnClickListener {
