@@ -66,7 +66,7 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
         // Adicione um OnClickListener ao texto clicável - ITALIA
         clickableText.setOnClickListener {
             // Analise a mensagem recebida para extrair latitude e longitude
-            val message = "Queda detectada! Nome: aaaa Latitude: 43.49121415928346 Longitude: 11.64144410444921"
+            val message = clickableText.text.toString()
 
             // Encontrar o valor após "Latitude: " e "Longitude: "
             val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
