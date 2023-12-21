@@ -43,47 +43,15 @@
         android:layout_marginBottom="16dp"
         android:text="Iniciar"/>
 
-    <!-- Informações do usuário -->
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linear_layout_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/startButton"
-        android:layout_marginTop="16dp"
-        android:text="Mensagem:"/>
-
-    <TextView
-        android:id="@+id/locationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/messageTextView"
-        android:layout_marginTop="10dp"
-        android:text="Localização: Latitude, Longitude" />
-
-    <!-- Texto 1 -->
-
-    <!-- Texto 2 -->
-
-    <TextView
-        android:id="@+id/clickableText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/messageTextView"
-        android:layout_marginTop="55dp"
-        android:clickable="true"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
         android:focusable="true"
-        android:text="Queda detectada! Nome: aaaa Latitude: 43.49121415928346 Longitude: 11.64144410444921"
-        android:textColor="?attr/colorAccent" />
-
-    <TextView
-        android:id="@+id/clickableText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/messageTextView"
-        android:layout_marginTop="119dp"
         android:clickable="true"
-        android:focusable="true"
-        android:text="Clique aqui para atualizar a localização para 2 - França"
         android:textColor="?attr/colorAccent" />
 
 

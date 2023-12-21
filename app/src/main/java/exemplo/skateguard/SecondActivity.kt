@@ -2,10 +2,13 @@ package exemplo.skateguard
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.MapView
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import exemplo.skateguard.AppGlobals.mqttManager
@@ -16,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import kotlin.random.Random
 
 
 class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, OnMapReadyCallback, AccelerometerManager.FallDetectionListener {
@@ -24,8 +26,6 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
     private lateinit var locationManager: LocationManager
     private lateinit var mapView: MapView
     private lateinit var startButton: Button
-    private lateinit var messageTextView: TextView
-    private lateinit var locationTextView: TextView
 
     private lateinit var googleMap: GoogleMap
     private var mapViewInitialized = false
@@ -38,9 +38,26 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
     private lateinit var accelerometerManager: AccelerometerManager
     private var isSensorStarted = false
 
+    companion object {
+        @Volatile
+        internal var instance: SecondActivity? = null
+
+        @JvmStatic
+        fun getInstance(): SecondActivity? {
+            return instance
+        }
+
+        @JvmStatic
+        fun setInstance(activity: SecondActivity?) {
+            instance = activity
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
+
+        SecondActivity.setInstance(this)
 
         // Inicializar a classe LocationManager
         locationManager = LocationManager(this, this)
@@ -55,58 +72,6 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
 
         // Inicialize o botão
         startButton = findViewById(R.id.startButton)
-
-        // Inicialize as referências aos elementos de texto
-        messageTextView = findViewById(R.id.messageTextView)
-        locationTextView = findViewById(R.id.locationTextView)
-
-        // Inicialize o elemento de texto clicável (TextView)
-        val clickableText = findViewById<TextView>(R.id.clickableText)
-
-        // Adicione um OnClickListener ao texto clicável - ITALIA
-        clickableText.setOnClickListener {
-            // Analise a mensagem recebida para extrair latitude e longitude
-            val message = clickableText.text.toString()
-
-            // Encontrar o valor após "Latitude: " e "Longitude: "
-            val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
-            val longitudePattern = Regex("Longitude: ([-+]?\\d+\\.?\\d*)")
-
-            val latitudeMatch = latitudePattern.find(message)
-            val longitudeMatch = longitudePattern.find(message)
-
-            val novaLatitude = latitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
-            val novaLongitude = longitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
-
-            AppGlobals.minha_latitude = novaLatitude ?: 0.0
-            AppGlobals.minha_longitude = novaLongitude ?: 0.0
-
-            if (novaLatitude != null && novaLongitude != null) {
-                Log.d("FallDetection", "Novos valores - Latitude: $novaLatitude, Longitude: $novaLongitude")
-                Log.d("updateMapLocation", "Valores finais - minha_latitude: ${AppGlobals.minha_latitude}, minha_longitude: ${AppGlobals.minha_longitude}")
-            } else {
-                Log.e("FallDetection", "Valores de Latitude ou Longitude não encontrados ou não são válidos")
-            }
-
-            // Chame a função updateMapLocation com os valores seguros
-            updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
-
-        }
-
-        // Inicialize o elemento de texto clicável 2 (TextView) - sem tratamento
-        val clickableText2 = findViewById<TextView>(R.id.clickableText2)
-        //FRANÇA: AppGlobals.minha_latitude = 46.912112216597877 AppGlobals.minha_longitude = 3.6053229560989597
-
-        // Adicione um OnClickListener ao texto clicável
-        clickableText2.setOnClickListener {
-            // Atualize as variáveis minha_latitude e minha_longitude
-            AppGlobals.minha_latitude = 46.912112216597877
-            AppGlobals.minha_longitude = 3.6053229560989597
-
-            // Chame a função updateMapLocation com as variáveis atualizadas
-            updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
-        }
-
 
         fun initAccelerometerManager() {
             accelerometerManager = AccelerometerManager(this, object : AccelerometerManager.FallDetectionListener {
@@ -284,5 +249,55 @@ class SecondActivity : AppCompatActivity(), LocationManager.LocationCallback, On
             //updateMapLocation(latitude, longitude)
         }
     }
+    var TAG = "DFSDF"
+    fun processMqttMessage(mensagemRecebida: String) {
+        Log.d(TAG, "Chegou no secundy: $mensagemRecebida")
+
+        val newClickableText = TextView(this)
+
+        newClickableText.text = mensagemRecebida
+
+        // Adicione o novo TextView ao layout
+        val layout = findViewById<LinearLayout>(R.id.linear_layout_container)
+        layout.addView(newClickableText)
+
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            // Limpe o texto após 20 segundos
+            layout.removeView(newClickableText)
+        }, 20000)
+
+        // Adicione um OnClickListener ao texto clicável - ITALIA
+        newClickableText.setOnClickListener {
+            // Analise a mensagem recebida para extrair latitude e longitude
+            val message =  newClickableText.text.toString()
+
+            // Encontrar o valor após "Latitude: " e "Longitude: "
+            val latitudePattern = Regex("Latitude: ([-+]?\\d+\\.?\\d*)")
+            val longitudePattern = Regex("Longitude: ([-+]?\\d+\\.?\\d*)")
+
+            val latitudeMatch = latitudePattern.find(message)
+            val longitudeMatch = longitudePattern.find(message)
+
+            val novaLatitude = latitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
+            val novaLongitude = longitudeMatch?.groupValues?.get(1)?.toDoubleOrNull()
+
+            AppGlobals.minha_latitude = novaLatitude ?: 0.0
+            AppGlobals.minha_longitude = novaLongitude ?: 0.0
+
+            if (novaLatitude != null && novaLongitude != null) {
+                Log.d("FallDetection", "Novos valores - Latitude: $novaLatitude, Longitude: $novaLongitude")
+                Log.d("updateMapLocation", "Valores finais - minha_latitude: ${AppGlobals.minha_latitude}, minha_longitude: ${AppGlobals.minha_longitude}")
+            } else {
+                Log.e("FallDetection", "Valores de Latitude ou Longitude não encontrados ou não são válidos")
+            }
+
+            // Chame a função updateMapLocation com os valores seguros
+            updateMapLocation(AppGlobals.minha_latitude, AppGlobals.minha_longitude)
+
+        }
+    }
+
 
 }
